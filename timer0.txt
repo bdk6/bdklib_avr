@@ -1,0 +1,84 @@
+
+atmega8
+TCNT0    -- timer register
+TCCR0    -- timer counter control register
+            [ - | - | - | - | - | CS02 | CS01 | CS00 ]
+            CS02, CS01, CS00 clock select
+            000  No clock, stop timer
+            001  CLKIO / 1
+            010  CLKIO / 8
+            011  CLKIO / 64
+            100  CLKIO / 256
+            101  CLKIO / 1024
+            110  EXT on T0 falling edge
+            111  EXT on T0 rising edge
+
+TIFR    -- Timer interrupt flag register
+           [ OCF2 | TOV2 | ICF1 | OCF1A | OCF1B | TOV1 | - | TOV0 ]
+           TOV0 -- Timer Overflow 0 -- 1 on overflow, reset by ISR
+                   or by writing 1 to bit
+
+TIMSK   -- [ OCIE2 | TOIE2 | TICIE1 | OCIE1 | TOIE1 | - | TOIE0 ]
+           TOIE0 -- Timer Overflow Intterupt Enable 0, 1 to enable
+
+atmega 48, 88, 168, 328
+TCCR0A   -- Timer Counter Control Register A
+            [ COM0A1 | COM0A0 | COM0B1 | COM0B0 | - | - | WGM01 | WGM00 ]
+            COM0A1, COM0A0 -- Compare Match Output A
+              Compare output mode, non pwm mode
+              00 -- Normal port, OC0A disconnected
+              01 -- Toggle OC0A on compare match
+              10 -- Cloear OC0A on Compare match
+              11 -- Set OC0A on compare match
+              Compare output mode, fast pwm mode
+              00 -- Normal port OC0A disconnected
+              01 -- WGM02 = 0, disconnect, WGM02 = 1, Toggle on compare match
+              10 -- Clear OC0A on match, set OC0A at bottom
+              11 -- Set OC0A on match, clear at bottom
+              Compare output mode, phase correct pwm mode
+              00 -- OC0A disconnected
+              01 -- WGM2=0, OC0A disconnected, WGM2=1, Toggle OC0A on match
+              10 -- Clear on match when up, Set on match when down
+              11 -- Set OC0A on match when up, clear on match when down
+
+            WGM02, WGM01, WGM00 -- Waveform Generation Mode
+            0 --- Normal Top = 0xFF
+
+TCCR0B   -- Timer Counter Control Register A
+            [ FOC0A | FOC0B | - | - | WGM02 | CS02 | CS01 | CS00 ]
+            WGM02 -- combine with WGM01, WGM00 in TCCR0A
+            CS02, CS01, CS00 -- Clock Select Same as atmega8
+
+TCNT0    -- Timer Counter Register
+TIMSK0   -- Timer Interrupt Mask 0
+            [ - | - | - | - | - | OCIE0B | OCIE0A | TOIE0 ]
+            TOIE0 -- Timer Overflow Interrupt Enable 0, 1 to enable
+
+TIFR0    -- Timer Interrupt Flag Register 0
+            [ - | - | - | - | - | OCF0B | OCF0A | TOV0 ]
+            TOV0 -- Timer Overflow cleared on ISR or write 1
+
+PRR      -- Power Reduction Register
+            [ PRTWI | PRTIM2 | PRTIM0 | - | PRTIM1 | PRSPI | PRUSART0 | PRADC ]
+            PRTIM0 -- Timer 0, 1 to turn it off
+            
+atmega32
+TCCR0   -- Timer Counter Control Register
+           [ FOC0 | WGM00 | COM01 | COM00 | WGM01 | CS02 | CS01 | CS00 ]
+           WGM0, WGM1 -- Waveform Generation Mode
+           00 -- Normal
+           01 -- PWM, phase correct
+           10 -- CTC
+           11 -- Fast PWM
+           CS02, CS01, CS00 -- Clock Select
+             same as atmega8
+
+TCNT0   -- Timer Counter register
+TIMSK   -- Timer Interrupt Mask
+           [ OCIE2 | TOIE2 | TICIE1 | OCIE1A | OCIE1B | TOIE1 | OCIE0 | TOIE0 ]
+           TOIE0 -- Enable overflow interrupt, 1 to enable
+
+TIFR    -- Timer Interrupt Flag Register
+           [ OCF2 | TOV2 | ICF1 | OCF1A | OCF1B | TOV1 | OCF0 | TOV0 ]
+           TOV0 -- Set to 1 when overflow, cleared by ISR or write 1
+

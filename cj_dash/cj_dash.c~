@@ -1,0 +1,85 @@
+//////////////////////////////////////////////////////////////////////////////
+/// @file cj_dash.c
+/// @copy Copyright 2022 William R Cooke
+/// @brief Early version of CJ dashboard using NA202 VFD display
+//////////////////////////////////////////////////////////////////////////////
+
+// PINS
+// D0  -- PB0
+// D1  -- PB1
+// D2  -- PB2
+// D3  -- PB3
+// D4  -- PD4
+// D5  -- PD5
+// D6  -- PD6
+// D7  -- PD7
+// WR  -- PB4
+// RES -- PB5
+
+
+#define VERSION_YEAR    2022
+#define VERSION_MONTH   7
+#define VERSION_DATE    7
+#define VERSION_MAJOR   0
+#define VERSION_MINOR   1
+#define VERSION_BUILD   1
+
+#define F_CPU           1000000UL
+
+#include <stdint.h>
+#include <avr/io.h>
+#include <util/delay.h>
+
+void reset(void)
+{
+  PORTB &= 0xdf;  // clear reset pin
+  _delay_ms(5);   // spec is 2 ms, but let's be safe
+  PORTB |= 0x20;  // set reset pin
+  _delay_ms(2);   // RES to WR is 2 ms, should be fine here
+}
+
+void write(uint8_t d)
+{
+  uint8_t b = PORTB;
+  b &= 0xf0;
+  b |= (d & 0x0f);
+  PORTB = b;
+  b = PORTD;
+  b &= 0x0f;
+  b |= (d & 0xf0);
+  PORTD = b;
+
+  PORTB &= 0xef;  // clear WR
+  PORTB |= 0x10;  // set WR
+  _delay_us(350); // wait
+
+int main()
+{
+  DDRB = 0x3f;   // D0-D3 and WR, RES as outputs
+  DDRD = 0xf0;   // D4-D7 as outputs
+  PORTB = 0xff;  // Prep the objective
+  PORTD = 0xff;
+  reset();
+  _delay_ms(50); // Let things settle a bit
+
+  // Let's try writing something
+  write('H');
+  write('e');
+  write('l');
+  write('l');
+  write('o');
+  write(' ');
+  write('w');
+  write('o');
+  write('r');
+  write('l');
+  write('d');
+
+  while(1);
+}
+
+
+  
+  
+  
+  
